@@ -9,7 +9,6 @@ lazy val root = Project("scala-circuit-breaker", file("."))
     Defaults.itSettings,
     organization := "uk.gov.nationalarchives",
     name := "scala-circuit-breaker",
-    version := "1.0.0-SNAPSHOT",
     scalaVersion := "2.13.8",
     licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
     homepage := Some(url("https://github.com/nationalarchives/scala-circuit-breaker")),
@@ -69,6 +68,7 @@ lazy val root = Project("scala-circuit-breaker", file("."))
     },
 
     releaseCrossBuild := false,
+    releaseVersionBump := sbtrelease.Version.Bump.Minor,
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
       inquireVersions,
