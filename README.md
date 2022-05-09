@@ -7,6 +7,12 @@
 
 The Circuit Breaker pattern implemented as a library in Scala.
 
+We provide two implementations:
+1. `StandardCircuitBreaker` which is not thread-safe and should only be used from a single-thread of have access to it synchronised.
+2. `ThreadSafeCircuitBreaker` which is thread-safe and may be used from multiple threads concurrently.
+
+Both implementations may be safely used in the same application for different purposes.
+
 ## Use
 
 You need to add the following dependency to your `build.sbt`:
@@ -47,6 +53,42 @@ import scala.util.{Failure, Success, Try}
        case Success(result) => println(s"Your task succeeded: $result")
        case Failure(t) => println(s"Your task failed: $t")
      }
+     case RejectedTask(reason) => println(s"Task was rejected, Circuit Breaker is open: $reason")
+   }
+```
+
+An example for those of you working with `Future`:
+
+```scala
+import uk.gov.nationalarchives.scb.{Listener, RejectedTask, StandardCircuitBreaker, TaskWithFuse}
+
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.nationalarchives.scb.support.FunctorAdapter.functorForFuture
+
+import java.io.IOException
+import scala.concurrent.Future
+
+
+  @throws[IOException]
+  def yourTask: String = ???
+
+  val circuitBreaker = StandardCircuitBreaker("my-breaker-1", maxFailures = 5, resetTimeout = 120.seconds, exponentialBackoffFactor = 2, maxResetTimeout = 10.minutes)
+
+  circuitBreaker.addListener(new Listener {
+    override def onClosed(): Unit = println("Circuit Breaker now closed... you can take action on this event if you like!")
+    override def onHalfOpen(): Unit = println("Circuit Breaker now half-open... you can take action on this event if you like!")
+    override def onOpen(): Unit = println("Circuit Breaker now open... you can take action on this event if you like!")
+  })
+
+  val yourProtectedTask = circuitBreaker.protect(Future { yourTask })
+
+  yourProtectedTask match {
+     case TaskWithFuse(task) =>
+       task
+         .map(result => println(s"Your task succeeded: $result"))
+         .recover { case t: Throwable => println(s"Your task failed: $t")}
+
      case RejectedTask(reason) => println(s"Task was rejected, Circuit Breaker is open: $reason")
    }
 ```

@@ -21,6 +21,7 @@
 
 package uk.gov.nationalarchives.scb.support
 
+import scala.concurrent.Future
 import scala.util.Try
 
 /**
@@ -47,6 +48,29 @@ object FunctorAdapter {
     }
 
     override def recoverWith[A, U >: A](fa: Try[A])(pf: PartialFunction[Throwable, Try[U]]): Try[U] = {
+      fa.recoverWith(pf)
+    }
+  }
+
+  /**
+   * Adapts a Future to a Functor[Future].
+   */
+  implicit val functorForFuture: Functor[Future] = new Functor[Future] {
+
+    // TODO(AR) make the execution context parameterizable
+    import scala.concurrent.ExecutionContext.Implicits.global
+
+    override def pure[A](a: => A): Future[A] = Future { a }
+
+    override def map[A, B](fa: Future[A])(f: A => B): Future[B] = {
+      fa.map(f)
+    }
+
+    override def failed[A](exception: Throwable): Future[A] = {
+      pure(throw exception)
+    }
+
+    override def recoverWith[A, U >: A](fa: Future[A])(pf: PartialFunction[Throwable, Future[U]]): Future[U] = {
       fa.recoverWith(pf)
     }
   }

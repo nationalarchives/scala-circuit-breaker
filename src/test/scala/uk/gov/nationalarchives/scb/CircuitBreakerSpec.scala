@@ -23,7 +23,7 @@ package uk.gov.nationalarchives.scb
 
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.nationalarchives.scb.support.TryFunctorTestSupport
+import uk.gov.nationalarchives.scb.support.{FunctorTestSupport, FutureFunctorTestSupport, TryFunctorTestSupport}
 
 /**
  * Specs for a Circuit Breaker.
@@ -36,20 +36,20 @@ class CircuitBreakerSpec extends AnyWordSpec with Matchers with CircuitBreakerBe
 
   // for each type of Circuit Breaker
   for (testableCircuitBreakerFactory <- Seq(TestableStandardCircuitBreaker, TestableThreadSafeCircuitBreaker)) {
+    testAllStates(TryFunctorTestSupport, testableCircuitBreakerFactory)
+    testAllStates(FutureFunctorTestSupport, testableCircuitBreakerFactory)
+  }
 
-    // for each type of FunctorAdapter
-    val ftss = Seq(TryFunctorTestSupport)
-    for (fts <- ftss) {
-      s"A ${testableCircuitBreakerFactory.testName} over ${fts.testName}" when {
+  private def testAllStates[F[_]](fts: FunctorTestSupport[F], testableCircuitBreakerFactory: TestableCircuitBreakerFactory) = {
+    s"A ${testableCircuitBreakerFactory.testName} over ${fts.testName}" when {
 
-        inClosedState(fts, TestableClosedCircuitBreaker(testableCircuitBreakerFactory))
+      inClosedState(fts, TestableClosedCircuitBreaker(testableCircuitBreakerFactory))
 
-        inOpenState(fts, TestableOpenCircuitBreaker(testableCircuitBreakerFactory))
+      inOpenState(fts, TestableOpenCircuitBreaker(testableCircuitBreakerFactory))
 
-        inResetTimeoutState(fts, TestableResetTimeoutCircuitBreaker(testableCircuitBreakerFactory))
+      inResetTimeoutState(fts, TestableResetTimeoutCircuitBreaker(testableCircuitBreakerFactory))
 
-        inHalfOpenState(fts, TestableHalfOpenCircuitBreaker(testableCircuitBreakerFactory))
-      }
+      inHalfOpenState(fts, TestableHalfOpenCircuitBreaker(testableCircuitBreakerFactory))
     }
   }
 
