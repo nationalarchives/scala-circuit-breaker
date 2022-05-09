@@ -117,3 +117,6 @@ libraryDependencies += "uk.gov.nationalarchives" %% "scala-circuit-breaker" % "1
 
 ## Publishing a Release to Maven Central
 
+1. Run `sbt clean release`
+2. Answer the questions
+3. Login to https://oss.sonatype.org/ then Close, and Release the Staging Repository

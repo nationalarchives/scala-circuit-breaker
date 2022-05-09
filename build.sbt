@@ -1,4 +1,5 @@
 import sbt.Keys.resolvers
+import ReleaseTransformations._
 
 ThisBuild / versionScheme := Some("semver-spec")
 
@@ -65,5 +66,20 @@ lazy val root = Project("scala-circuit-breaker", file("."))
         Some("snapshots" at nexus + "content/repositories/snapshots/")
       else
         Some("releases"  at nexus + "service/local/staging/deploy/maven2/")
-    }
+    },
+
+    releaseCrossBuild := false,
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      runClean,
+      runTest,
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      releaseStepCommand("publishSigned"),
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
+    )
   )
