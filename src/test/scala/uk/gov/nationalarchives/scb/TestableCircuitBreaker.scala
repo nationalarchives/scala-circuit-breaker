@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2022 The National Archives
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+package uk.gov.nationalarchives.scb
+
+/**
+ * Additional methods to inspect the state of a Circuit Breaker
+ * when testing.
+ *
+ * @author <a href="mailto:adam@evolvedbinary.com">Adam Retter</a>
+ */
+trait TestableCircuitBreaker extends CircuitBreaker {
+  /**
+   * Package-private method for use in Tests only.
+   *
+   * Set the Internal State.
+   *
+   * @param internalState the Internal State to set
+   */
+  private[scb] def setInternalState(internalState: InternalState.InternalState): Unit
+
+  /**
+   * Package-private method for use in Tests only.
+   *
+   * Get the Internal State.
+   *
+   * @return the Internal State
+   */
+  private[scb] def getInternalState(): InternalState.InternalState
+
+  /**
+   * Package-private method for use in Tests only.
+   *
+   * Get the Max Failures.
+   *
+   * @return the max failures.
+   */
+  private[scb] def getMaxFailures(): Int
+}
+
+trait TestableCircuitBreakerFactory {
+  def testName: String
+  def apply(maxFailures: Int = 3, initialState: State.State) : TestableCircuitBreaker
+}
