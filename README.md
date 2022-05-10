@@ -13,6 +13,12 @@ We provide two implementations:
 
 Both implementations may be safely used in the same application for different purposes.
 
+The Circuit Breaker implementations have been developed in such a way that they operate over an Abstract Type called `Functor`.
+Through this mechanism it is possible for the Circuit Breakers to work directly with your own Data Types,
+you just need to provide an implementation of `uk.gov.nationalarchives.scb.support.Functor`.
+
+We provide adapters (in `uk.gov.nationalarchives.scb.support.FunctorAdapter`) that you may import that provide implementations for Scala's `Try` and `Future` types.
+
 ## Use
 
 You need to add the following dependency to your `build.sbt`:
@@ -21,11 +27,10 @@ You need to add the following dependency to your `build.sbt`:
 "uk.gov.nationalarchives" %% "scala-circuit-breaker" % "1.0.0"
 ```
 
-## Example
+## Examples
 
-Support for using the Scala Circuit Breaker with `Try` or `Future` is baked in.
+### Example using `Try`
 
-An example for those of you working with `Try`:
 ```scala
 import uk.gov.nationalarchives.scb._
 import uk.gov.nationalarchives.scb.support.FunctorAdapter.functorForTry
@@ -57,7 +62,7 @@ import scala.util.{Failure, Success, Try}
    }
 ```
 
-An example for those of you working with `Future`:
+### Example using `Future`
 
 ```scala
 import uk.gov.nationalarchives.scb.{Listener, RejectedTask, StandardCircuitBreaker, TaskWithFuse}
