@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/uk.gov.nationalarchives/scala-circuit-breaker_2.13/badge.svg)](https://search.maven.org/search?q=g:uk.gov.nationalarchives)
 
-The Circuit Breaker pattern implemented as a library in Scala.
+The [Circuit Breaker pattern](https://martinfowler.com/bliki/CircuitBreaker.html) implemented as a library in Scala.
 
 We provide two implementations:
 1. `StandardCircuitBreaker` which is not thread-safe and should only be used from a single-thread of have access to it synchronised.
