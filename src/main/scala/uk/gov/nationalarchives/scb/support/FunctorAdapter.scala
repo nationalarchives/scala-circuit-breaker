@@ -52,6 +52,36 @@ object FunctorAdapter {
     }
   }
 
+  implicit val functorForFunction0: Functor[Function0] = new Functor[Function0] {
+    var failure: Option[Throwable] = None
+
+    override def pure[A](a: => A): () => A = () => a
+
+    override def map[A, B](fa: Function0[A])(f: A => B): Function0[B] = {
+      // TODO(AR) we would be better perhaps to use flatMap, so that we can defer the execution of fa()
+      try {
+        val a = fa()
+        pure(f(a))
+      } catch {
+        case exception: Throwable =>
+          this.failed[B](exception)
+        //          () => exception.getMessage // TODO(AR) possible example of recovery which we can't compile!
+      }
+    }
+
+    override def failed[A](exception: Throwable): Function0[A] = {
+      this.failure = Some(exception)
+      pure(throw exception)
+    }
+
+    override def recoverWith[A, U >: A](fa: Function0[A])(pf: PartialFunction[Throwable, Function0[U]]): Function0[U] = {
+      failure match {
+        case Some(exception) => pf.apply(exception)
+        case None => fa
+      }
+    }
+  }
+
   /**
    * Adapts a Future to a Functor[Future].
    */
