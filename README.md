@@ -24,7 +24,7 @@ We provide adapters (in `uk.gov.nationalarchives.scb.support.FunctorAdapter`) th
 You need to add the following dependency to your `build.sbt`:
 
 ```scala
-"uk.gov.nationalarchives" %% "scala-circuit-breaker" % "1.0.0"
+"uk.gov.nationalarchives" %% "scala-circuit-breaker" % "1.0.1"
 ```
 
 ## Examples
@@ -115,9 +115,10 @@ git clone https://github.com/nationalarchives/scala-circuit-breaker.git
 ```
 sbt clean compile publishLocal
 ```
-After this other builds on the same machine can depend on it:
-```
-libraryDependencies += "uk.gov.nationalarchives" %% "scala-circuit-breaker" % "1.0.0-SNAPSHOT"
+After this, other builds on the same machine can depend on it by modifying their `build.sbt` files to include the SNAPSHOT dependency:
+
+```scala
+"uk.gov.nationalarchives" %% "scala-circuit-breaker" % "1.1.0-SNAPSHOT"
 ```
 
 ## Publishing a Release to Maven Central
