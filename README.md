@@ -3,7 +3,7 @@
 [![Build Status](https://github.com/nationalarchives/scala-circuit-breaker/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/nationalarchives/scala-circuit-breaker/actions/workflows/ci.yml)
 [![Scala 2.13](https://img.shields.io/badge/scala-2.13-red.svg)](http://scala-lang.org)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/uk.gov.nationalarchives.pdi/scala-circuit-breaker/badge.svg)](https://search.maven.org/search?q=g:uk.gov.nationalarchives)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/uk.gov.nationalarchives/scala-circuit-breaker_2.13/badge.svg)](https://search.maven.org/search?q=g:uk.gov.nationalarchives)
 
 The Circuit Breaker pattern implemented as a library in Scala.
 
