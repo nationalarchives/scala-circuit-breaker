@@ -56,7 +56,7 @@ trait CircuitBreaker {
    *
    * @return the result of the task.
    */
-  def protect[F[_], T](task: F[T])(implicit functor: Functor[F]): ProtectedTask[F[T]]
+  def protect[F[_], T](task: => F[T])(implicit functor: Functor[F]): ProtectedTask[F[T]]
 }
 
 /**

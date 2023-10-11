@@ -26,6 +26,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.nationalarchives.scb.support.FunctorTestSupport
 
 import java.util.UUID
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Spec behaviours for a Circuit Breaker.
@@ -83,10 +84,14 @@ trait CircuitBreakerBehaviours extends AnyWordSpec with Matchers {
   def inOpenState[F[_]](fts: FunctorTestSupport[F], newCircuitBreaker: => CircuitBreaker): Unit = {
     "in the OPEN state" should {
       "reject all tasks" in {
-        val successResult = s"OK-${uuid()}"
-        val task = fts.functor.pure(successResult)
+        val taskWasRun = new AtomicBoolean(false)
+        def task = fts.functor.pure {
+          taskWasRun.set(true)
+          s"OK-${uuid()}"
+        }
         val actualResult = newCircuitBreaker.protect(task)(fts.functor)
         actualResult mustBe a [RejectedTask[_]]
+        taskWasRun.get() mustBe false
       }
     }
   }

@@ -56,7 +56,7 @@ class ThreadSafeCircuitBreaker(val name: String, maxFailures: Int, resetTimeout:
     listeners.add(listener)
   }
 
-  override def protect[F[_], T](task: F[T])(implicit functor: Functor[F]): ProtectedTask[F[T]] = {
+  override def protect[F[_], T](task: => F[T])(implicit functor: Functor[F]): ProtectedTask[F[T]] = {
     state.get() match {
       case CLOSED =>
         execClosedTask(task)(functor)
